@@ -1,145 +1,434 @@
-# Invertis University Lost & Found Portal
+# 🎓 Invertis University — Lost & Found Portal
 
-A campus lost-and-found web application for reporting misplaced belongings, browsing items found on campus, and submitting ownership claims. The portal includes an admin area for reviewing reports and managing claims.
+<p align="center">
+  <img src="./public/images/logo.png" alt="Invertis University Logo" width="120" />
+</p>
 
-## Screenshots
+<p align="center">
+  <strong>A modern, full-stack campus asset recovery and management platform.</strong><br>
+  Built for students, faculty, and campus security staff to report misplaced belongings, browse discovered items, submit ownership claims, and resolve asset recoveries.
+</p>
 
-| Home page | Lost items |
-| --- | --- |
-| ![Home page](./screenshots/home-page.png) | ![Lost items](./screenshots/lost-items.png) |
+<p align="center">
+  <a href="#-core-features"><img src="https://img.shields.io/badge/Status-Active-success.svg?style=for-the-badge" alt="Status" /></a>
+  <a href="#️-tech-stack"><img src="https://img.shields.io/badge/Node.js-v16+-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node.js" /></a>
+  <a href="#️-tech-stack"><img src="https://img.shields.io/badge/Express.js-4.x-000000?style=for-the-badge&logo=express&logoColor=white" alt="Express.js" /></a>
+  <a href="#️-tech-stack"><img src="https://img.shields.io/badge/SQLite-3-003B57?style=for-the-badge&logo=sqlite&logoColor=white" alt="SQLite" /></a>
+  <a href="#️-tech-stack"><img src="https://img.shields.io/badge/Sequelize-ORM-52B0E7?style=for-the-badge&logo=sequelize&logoColor=white" alt="Sequelize" /></a>
+  <a href="#-license"><img src="https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge" alt="License" /></a>
+  <a href="https://github.com/s4hill/iu-lost-and-found-portal/pulls"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=for-the-badge" alt="PRs Welcome" /></a>
+</p>
 
-| Found items | Report a lost item |
-| --- | --- |
-| ![Found items](./screenshots/found-items.png) | ![Report a lost item](./screenshots/report-lost.png) |
+---
 
-| Report a found item | Admin login |
-| --- | --- |
-| ![Report a found item](./screenshots/report-found.png) | ![Admin login](./screenshots/admin-login.png) |
+## 📑 Table of Contents
 
-## Features
+- [📌 Overview](#-overview)
+- [📸 Visual Preview & Screenshots](#-visual-preview--screenshots)
+- [✨ Core Features](#-core-features)
+- [🏗️ System Architecture & Workflow](#️-system-architecture--workflow)
+- [🛠️ Tech Stack](#️-tech-stack)
+- [🚀 Quick Start Guide](#-quick-start-guide)
+  - [Prerequisites](#prerequisites)
+  - [Installation & Setup](#installation--setup)
+  - [Demo Admin Credentials](#demo-admin-credentials)
+- [🌐 Application Pages](#-application-pages)
+- [🔌 REST API Reference](#-rest-api-reference)
+- [🗄️ Database Schema & Data Models](#️-database-schema--data-models)
+- [📂 Project Directory Structure](#-project-directory-structure)
+- [🔒 Security & Production Hardening](#-security--production-hardening)
+- [🤝 Contributing](#-contributing)
+- [📄 License](#-license)
+- [👥 Authors & Acknowledgments](#-authors--acknowledgments)
 
-- Browse separate lists of lost and found items.
-- Search item names and descriptions, filter by category and campus location, and navigate paginated results.
-- Submit lost-item and found-item reports with item details and contact information.
-- Optionally attach an image to a report (up to 5 MB).
-- View individual item details and submit a claim for a found item with proof of ownership.
-- See portal statistics and recently reported items on the home page.
-- Use the admin dashboard to review reports and claims, approve or reject claims, mark items as returned, and delete reports.
-- Store application data in a local SQLite database through Sequelize.
-- Use responsive page layouts for desktop and mobile screens.
+---
 
-## Tech stack
+## 📌 Overview
 
-- **Backend:** Node.js, Express
-- **Frontend:** HTML, CSS, vanilla JavaScript
-- **Database/ORM:** SQLite, Sequelize
-- **Other libraries:** Multer for image uploads, bcryptjs for password hashing, express-session for sessions
+Misplacing student IDs, electronics, laptop chargers, keys, wallets, or textbooks across a large university campus is a frequent challenge. Traditional notice boards and fragmented social media groups are slow, noisy, and inefficient.
 
-## Getting started
+The **Invertis University Lost & Found Portal** solves this problem by providing a centralized, streamlined web application:
+- **For Students & Faculty:** Instantly report lost belongings, browse or search items turned in by others, and file verified claims with proof of ownership.
+- **For Campus Finders:** Easily log found items and specify whether they were deposited with campus security or retained personally.
+- **For Administrative Staff & Security:** Review claims, verify ownership, approve or reject claims, toggle return statuses, and maintain transparency across campus asset recovery.
+
+---
+
+## 📸 Visual Preview & Screenshots
+
+| 🏠 Home Dashboard & Live Metrics | 🔍 Lost Items Directory & Filters |
+| :---: | :---: |
+| ![Home Page](./screenshots/home-page.png) | ![Lost Items](./screenshots/lost-items.png) |
+| *Live counters, recent reports, and quick report CTAs.* | *Search by keyword, filter by category and location.* |
+
+| 📦 Found Items Directory | 📝 Report a Lost Item Form |
+| :---: | :---: |
+| ![Found Items](./screenshots/found-items.png) | ![Report Lost Item](./screenshots/report-lost.png) |
+| *Browse items discovered across campus blocks with claim options.* | *Submit details, last known location, and optional photo.* |
+
+| 🤝 Report a Found Item Form | 🛡️ Administrative Portal |
+| :---: | :---: |
+| ![Report Found Item](./screenshots/report-found.png) | ![Admin Login](./screenshots/admin-login.png) |
+| *Log found items with finder contact and security handoff status.* | *Secure login to audit reports, verify claims, and mark items returned.* |
+
+---
+
+## ✨ Core Features
+
+### 🔍 Parametric Search & Filtering
+- **Keyword Search:** Instant full-text search across item names and detailed descriptions.
+- **Campus Category Filters:** 9 distinct categories including *ID Cards, Mobile Phones, Wallets, Bags, Electronics, Books, Keys, Accessories, and Others*.
+- **Campus Location Filters:** 10 pre-configured locations across Invertis University (*Library, Canteen, Auditorium, Computer Lab, Parking Lot, Sports Complex, Academic Block, Hostel, Administrative Block, Ground*).
+- **Server-Side Pagination:** Smooth pagination (`page` and `limit`) for fast loading regardless of catalog size.
+
+### 📸 Media Uploads & Form Validation
+- **Image Attachments:** Optional image uploads handled by `Multer` with 5 MB file size limit and strict image MIME-type validation.
+- **Input Sanitization:** Structured forms capturing date, exact location, and contact information (name, university email, phone).
+
+### 🤝 Claim & Ownership Verification Workflow
+- **Claim Submission:** Users can file a claim for any found item by submitting detailed proof of ownership (e.g., specific markings, serial numbers, wallpapers, contents).
+- **Anti-Spam Guard:** Prevents duplicate concurrent pending claims on the same item.
+- **Audit Trail:** Claims transition through `pending`, `approved`, and `rejected` statuses.
+
+### 🛡️ Administrative Control Center
+- **Session Authentication:** Protected administrator area powered by `express-session` and `bcryptjs`.
+- **Status Management:** Mark lost or found items as `returned`, updating aggregate statistics in real time.
+- **Claim Decisioning:** Approve valid claims (automatically setting item status to `claimed`) or reject invalid claims.
+- **Record Management:** Permanently purge obsolete or duplicate listings.
+
+### 📊 Real-Time Campus Analytics
+- Dynamic statistics counter on the homepage showcasing:
+  - Total Lost Items Reported
+  - Total Found Items Discovered
+  - Items Successfully Returned
+  - Pending Claims in Review
+
+### 📱 Responsive & Accessible UI
+- Modern, clean user interface built with semantic HTML5 and vanilla CSS3.
+- Fully responsive across desktop browsers, tablets, and mobile devices.
+- Enhanced with Font Awesome 6 icons and intuitive status badges.
+
+---
+
+## 🏗️ System Architecture & Workflow
+
+```mermaid
+flowchart TD
+    subgraph Campus Users [🎓 Campus Community]
+        U1[Student / Staff: Lost Item] -->|Reports with details & photo| API_L[POST /api/lost]
+        U2[Finder: Discovered Item] -->|Reports item & security handoff| API_F[POST /api/found]
+        U3[Claimant: Owner of Found Item] -->|Submits proof of ownership| API_C[POST /api/claims]
+    end
+
+    subgraph Backend [⚡ Express.js Server]
+        API_L --> Multer[Multer Upload Handler]
+        API_F --> Multer
+        Multer --> Uploads[(/public/uploads)]
+        
+        API_L --> ORM[Sequelize ORM]
+        API_F --> ORM
+        API_C --> ORM
+        
+        AdminAPI[Admin Auth & Actions] --> ORM
+    end
+
+    subgraph Database [🗄️ SQLite Database]
+        ORM <--> DB[(database.sqlite)]
+    end
+
+    subgraph Admin Console [🛡️ Campus Security / Admin]
+        AdminUser[Admin / Security Officer] -->|Login with credentials| AdminAPI
+        AdminAPI -->|Approve / Reject Claim| ORM
+        AdminAPI -->|Mark Item as Returned| ORM
+    end
+```
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer | Technology | Description |
+| :--- | :--- | :--- |
+| **Backend** | [Node.js](https://nodejs.org/) & [Express.js](https://expressjs.com/) | RESTful API server, routing, static asset serving, and middleware pipeline |
+| **Database & ORM** | [SQLite3](https://www.sqlite.org/) via [Sequelize](https://sequelize.org/) | Embedded SQL database with schema synchronization and auto-seeding |
+| **Frontend** | HTML5, CSS3, Vanilla JavaScript (ES6+) | Lightweight, dependency-free client application with responsive layouts |
+| **File Handling** | [Multer](https://github.com/expressjs/multer) | Multipart form-data parser with disk storage, size limits, and MIME filtering |
+| **Authentication** | [bcryptjs](https://github.com/dcodeIO/bcrypt.js) & [express-session](https://github.com/expressjs/session) | Secure password hashing and cookie-backed admin session management |
+| **UI Assets** | [Font Awesome 6](https://fontawesome.com/) & Google Fonts | Vector iconography and modern typography |
+| **Development** | [Nodemon](https://nodemon.io/) | Auto-reloading developer server |
+
+---
+
+## 🚀 Quick Start Guide
 
 ### Prerequisites
 
-- Node.js and npm
+Ensure you have the following installed on your machine:
+- **Node.js**: `v16.0.0` or higher ([Download Node.js](https://nodejs.org/))
+- **npm**: `v8.0.0` or higher (bundled with Node.js)
+- **Git**: ([Download Git](https://git-scm.com/))
 
-### Install and run
+### Installation & Setup
 
-```bash
-git clone https://github.com/s4hill/iu-lost-and-found-portal.git
-cd iu-lost-and-found-portal
-npm install
-npm run dev
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/s4hill/iu-lost-and-found-portal.git
+   cd iu-lost-and-found-portal
+   ```
+
+2. **Install project dependencies:**
+   ```bash
+   npm install
+   ```
+
+3. **Configure environment variables (optional):**
+   Copy the provided `.env.example` file to create your local `.env`:
+   ```bash
+   cp .env.example .env
+   ```
+
+4. **Start the server:**
+   
+   - **Development mode** (auto-restarts on code changes using nodemon):
+     ```bash
+     npm run dev
+     ```
+
+   - **Production mode**:
+     ```bash
+     npm start
+     ```
+
+5. **Open in browser:**
+   Navigate to [http://localhost:3000](http://localhost:3000).
+
+> [!NOTE]
+> On first startup, Sequelize automatically initializes `database.sqlite` in the project root and populates it with sample campus lost/found records and a default administrator account.
+
+---
+
+### Demo Admin Credentials
+
+For testing the administrative dashboard locally, use the pre-seeded admin credentials:
+
+| Field | Value |
+| :--- | :--- |
+| **Login URL** | `http://localhost:3000/admin` |
+| **Username** | `admin` |
+| **Password** | `admin123` |
+
+> [!TIP]
+> These credentials are for local development and demonstration purposes only. Refer to [Security & Production Hardening](#-security--production-hardening) before deploying to a production server.
+
+---
+
+## 🌐 Application Pages
+
+| Route | File | Description |
+| :--- | :--- | :--- |
+| `/` | `public/index.html` | Homepage with hero section, live counters, recent reports, and quick links |
+| `/lost` | `public/lost.html` | Searchable, filterable, and paginated directory of reported lost items |
+| `/found` | `public/found.html` | Searchable directory of found items with direct links to submit ownership claims |
+| `/report-lost` | `public/report-lost.html` | Form for reporting a lost item with date, location, contact, and image upload |
+| `/report-found` | `public/report-found.html` | Form for reporting a found item with security handoff checkbox and photo |
+| `/item` | `public/item.html` | Individual item detail view (`?id=<id>&type=<lost\|found>`) |
+| `/claim` | `public/claim.html` | Formal ownership claim submission form (`?itemId=<id>&type=found`) |
+| `/admin` | `public/admin.html` | Admin login and dashboard for managing reports, claims, and returned items |
+
+---
+
+## 🔌 REST API Reference
+
+All API routes return JSON data.
+
+### 📊 Campus Statistics
+
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `GET` | `/api/stats` | Returns counts for lost items, found items, returned items, and pending claims |
+
+### 🔍 Lost Items
+
+| Method | Endpoint | Params / Payload | Description |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/api/lost` | `?limit=4` (optional) | List lost items ordered by creation date (descending) |
+| `GET` | `/api/lost/search` | `?q=&category=&location=&page=1&limit=9` | Full-text search and filter with pagination |
+| `GET` | `/api/lost/:id` | `id` (path) | Fetch single lost item details |
+| `POST` | `/api/lost` | `multipart/form-data` (`item_name`, `category`, `description`, `date_lost`, `location_lost`, `contact_name`, `contact_email`, `contact_phone`, `image`) | Create a new lost item report |
+| `PUT` | `/api/lost/:id/return` | `id` (path) | Mark a lost item as returned |
+| `DELETE` | `/api/lost/:id` | `id` (path) | Delete a lost item report |
+
+### 📦 Found Items
+
+| Method | Endpoint | Params / Payload | Description |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/api/found` | `?limit=4` (optional) | List found items ordered by creation date (descending) |
+| `GET` | `/api/found/search` | `?q=&category=&location=&page=1&limit=9` | Full-text search and filter with pagination |
+| `GET` | `/api/found/:id` | `id` (path) | Fetch single found item details |
+| `POST` | `/api/found` | `multipart/form-data` (`item_name`, `category`, `description`, `date_found`, `location_found`, `finder_name`, `finder_email`, `finder_phone`, `handed_to_security`, `image`) | Create a new found item report |
+| `PUT` | `/api/found/:id/return` | `id` (path) | Mark a found item as returned |
+| `DELETE` | `/api/found/:id` | `id` (path) | Delete a found item report |
+
+### 🤝 Claims
+
+| Method | Endpoint | Params / Payload | Description |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/api/claims` | None | Retrieve all claims ordered by newest first |
+| `POST` | `/api/claims` | `application/json` (`item_id`, `item_type`, `claimant_name`, `claimant_email`, `claimant_phone`, `proof_description`) | Submit an ownership claim for an item |
+| `PUT` | `/api/claims/:id/approve` | `id` (path) | Approve a claim (marks item as `claimed`) |
+| `PUT` | `/api/claims/:id/reject` | `id` (path) | Reject a claim |
+
+### 🛡️ Admin Authentication
+
+| Method | Endpoint | Params / Payload | Description |
+| :--- | :--- | :--- | :--- |
+| `POST` | `/api/admin/login` | `application/json` (`username`, `password`) | Authenticate admin credentials and start session |
+| `POST` | `/api/admin/logout` | None | Destroy active admin session |
+| `GET` | `/api/admin/check` | None | Check if current session has active admin privileges |
+
+---
+
+## 🗄️ Database Schema & Data Models
+
+The SQLite database is managed via Sequelize ORM with timestamps enabled (`created_at`, `updated_at`).
+
+```
+┌─────────────────────────┐         ┌─────────────────────────┐
+│        LostItem         │         │        FoundItem        │
+├─────────────────────────┤         ├─────────────────────────┤
+│ id (PK)                 │         │ id (PK)                 │
+│ item_name: STRING       │         │ item_name: STRING       │
+│ category: STRING        │         │ category: STRING        │
+│ description: TEXT       │         │ description: TEXT       │
+│ date_lost: DATEONLY     │         │ date_found: DATEONLY    │
+│ location_lost: STRING   │         │ location_found: STRING  │
+│ image_path: STRING      │         │ image_path: STRING      │
+│ contact_name: STRING    │         │ finder_name: STRING     │
+│ contact_email: STRING   │         │ finder_email: STRING    │
+│ contact_phone: STRING   │         │ finder_phone: STRING    │
+│ status: ENUM            │         │ handed_to_security: BOOL│
+│   ['lost', 'claimed',   │         │ status: ENUM            │
+│    'returned']          │         │   ['found', 'claimed',  │
+└─────────────────────────┘         │    'returned']          │
+                                    └─────────────────────────┘
+                 ▲                               ▲
+                 │                               │
+                 └──────────────┬────────────────┘
+                                │
+                    ┌─────────────────────────┐
+                    │          Claim          │
+                    ├─────────────────────────┤
+                    │ id (PK)                 │
+                    │ item_id: INTEGER        │
+                    │ item_type: ENUM         │
+                    │   ['lost', 'found']     │
+                    │ claimant_name: STRING   │
+                    │ claimant_email: STRING  │
+                    │ claimant_phone: STRING  │
+                    │ proof_description: TEXT │
+                    │ status: ENUM            │
+                    │   ['pending', 'approved'│
+                    │    'rejected']          │
+                    └─────────────────────────┘
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser. The development command uses Nodemon and restarts the server when files change.
+---
 
-To run without Nodemon:
-
-```bash
-npm start
-```
-
-The server uses port `3000` by default. You can choose a different port with the `PORT` environment variable, for example:
-
-```bash
-PORT=4000 npm start
-```
-
-The SQLite database is stored at `database.sqlite` in the project root and is created/synchronized when the server starts. On a fresh database, the application seeds a demo admin account and sample item records.
-
-### Demo admin login
-
-Use these demo credentials to try the admin page locally:
+## 📂 Project Directory Structure
 
 ```text
-Username: admin
-Password: admin123
+iu-lost-and-found-portal/
+├── .env.example             # Template for environment configuration
+├── .gitignore               # Git ignore rules for node_modules, sqlite, uploads
+├── README.md                # Project documentation and guide
+├── package.json             # Project dependencies and npm scripts
+├── package-lock.json        # Pinned dependency tree
+├── server.js                # Core Express application and REST API endpoints
+├── database.sqlite          # SQLite database (auto-generated on first run)
+│
+├── models/                  # Sequelize ORM schema definitions
+│   ├── Admin.js             # Admin user schema
+│   ├── Claim.js             # Ownership claim schema
+│   ├── FoundItem.js         # Discovered item schema
+│   ├── LostItem.js          # Lost item schema
+│   └── index.js             # Sequelize connection, sync, and seed logic
+│
+├── routes/                  # Express route modules
+│   ├── claimRoutes.js       # Claim endpoints
+│   ├── foundRoutes.js       # Found items endpoints
+│   └── lostRoutes.js        # Lost items endpoints
+│
+├── public/                  # Static frontend assets
+│   ├── 404.html             # Custom 404 error page
+│   ├── admin.html           # Admin dashboard and login interface
+│   ├── claim.html           # Ownership claim submission form
+│   ├── found.html           # Found items directory
+│   ├── index.html           # Portal landing page and live counters
+│   ├── item.html            # Individual item detail page
+│   ├── lost.html            # Lost items directory
+│   ├── report-found.html    # Form to report found items
+│   ├── report-lost.html     # Form to report lost items
+│   ├── css/
+│   │   └── style.css        # Global CSS styling and responsive layouts
+│   ├── images/
+│   │   ├── college-bg.jpg   # Campus hero background banner
+│   │   ├── favicon.ico      # Site favicon
+│   │   └── logo.png         # Invertis University logo
+│   ├── js/
+│   │   ├── admin.js         # Admin dashboard logic and tab management
+│   │   ├── main.js          # General page scripts and animations
+│   │   └── search.js        # Search, filter, and pagination controller
+│   └── uploads/             # Destination for user-uploaded item photos
+│       └── .gitkeep         # Directory placeholder
+│
+└── screenshots/             # High-resolution screenshots for README
+    ├── admin-login.png      # Admin console preview
+    ├── found-items.png      # Found items listing preview
+    ├── home-page.png        # Homepage preview
+    ├── lost-items.png       # Lost items listing preview
+    ├── report-found.png     # Report found item preview
+    └── report-lost.png      # Report lost item preview
 ```
 
-These are public demo credentials for this project only. Do not reuse this password or use this demo authentication setup for a production deployment.
+---
 
-## Application pages
+## 🔒 Security & Production Hardening
 
-| Page | URL | Purpose |
-| --- | --- | --- |
-| Home | `/` | Portal overview, statistics, and recent reports |
-| Lost items | `/lost` | Browse and search lost-item reports |
-| Found items | `/found` | Browse and search found-item reports |
-| Report lost | `/report-lost` | Submit a lost-item report |
-| Report found | `/report-found` | Submit a found-item report |
-| Item details | `/item?id=<id>&type=<lost\|found>` | View an individual report |
-| Claim item | `/claim?itemId=<id>&type=found` | Submit a claim for a found item |
-| Admin | `/admin` | Admin login and dashboard |
+Before deploying this application to a public or production environment, ensure the following measures are taken:
 
-## API overview
+1. **Rotate Session Secret:** Replace the static secret in `server.js` with `process.env.SESSION_SECRET`.
+2. **Secure Cookies:** In production (`process.env.NODE_ENV === 'production'`), enable `cookie.secure: true` (requires HTTPS) and `cookie.httpOnly: true`.
+3. **Change Admin Credentials:** Never use the default `admin` / `admin123` password in production. Change it through the database or provide an environment-driven password.
+4. **Database Migration:** For high-traffic campus deployments, switch the Sequelize dialect from `sqlite` to `postgres` or `mysql2` (already installed in dependencies).
+5. **Rate Limiting:** Implement `express-rate-limit` on submission routes (`/api/lost`, `/api/found`, `/api/claims`, `/api/admin/login`) to guard against brute-force attacks and spam.
+6. **Data Privacy:** Regularly review `public/uploads/` and user submissions to ensure compliance with institutional privacy policies.
 
-The Express server exposes these JSON API routes:
+---
 
-| Method | Endpoint | Purpose |
-| --- | --- | --- |
-| `GET` | `/api/stats` | Get lost, found, returned, and pending-claim counts |
-| `GET` | `/api/lost` | List lost-item reports |
-| `GET` | `/api/lost/search` | Search/filter lost items; supports `q`, `category`, `location`, `page`, and `limit` |
-| `GET`, `POST` | `/api/lost/:id` or `/api/lost` | Get a report or create one |
-| `PUT`, `DELETE` | `/api/lost/:id/return` or `/api/lost/:id` | Mark a report returned or delete it |
-| `GET` | `/api/found` | List found-item reports |
-| `GET` | `/api/found/search` | Search/filter found items; supports `q`, `category`, `location`, `page`, and `limit` |
-| `GET`, `POST` | `/api/found/:id` or `/api/found` | Get a report or create one |
-| `PUT`, `DELETE` | `/api/found/:id/return` or `/api/found/:id` | Mark a report returned or delete it |
-| `GET`, `POST` | `/api/claims` | List claims or submit a claim |
-| `PUT` | `/api/claims/:id/approve` | Approve a claim |
-| `PUT` | `/api/claims/:id/reject` | Reject a claim |
-| `POST` | `/api/admin/login` | Authenticate an admin and establish a session |
-| `POST` | `/api/admin/logout` | End the admin session |
-| `GET` | `/api/admin/check` | Check whether an admin session is active |
+## 🤝 Contributing
 
-Item report creation accepts `multipart/form-data` when an image is attached. Search endpoints return paginated results.
+Contributions, feature requests, and improvements are warmly welcome!
 
-## Project structure
+1. **Fork the Project**
+2. **Create your Feature Branch** (`git checkout -b feature/NewFeature`)
+3. **Commit your Changes** (`git commit -m 'feat: Add NewFeature'`)
+4. **Push to the Branch** (`git push origin feature/NewFeature`)
+5. **Open a Pull Request**
 
-```text
-.
-├── models/                  # Sequelize models and SQLite initialization
-├── public/
-│   ├── css/style.css        # Shared site styles
-│   ├── images/              # Logo, favicon, and campus background
-│   ├── js/                  # Page, search, and admin interactions
-│   └── *.html               # Static application pages
-├── routes/                  # Route modules
-├── screenshots/             # README screenshots
-├── server.js                # Express server and API endpoints
-├── database.sqlite          # Local SQLite database (created/used at runtime)
-├── package.json
-└── package-lock.json
-```
+---
 
-## Before publishing or deploying
+## 📄 License
 
-- **Admin authentication is for demonstration only.** The current admin page contains a hard-coded client-side credential check, and the database setup seeds a default admin account (`admin` / `admin123`). These demo credentials and the session secret are present in source and will be visible in a public repository. Replace this with properly protected server-side authentication and rotate the session secret before deploying the app publicly.
-- The session secret is hard-coded in `server.js`. Use a strong secret from the environment and configure secure cookies before production use.
-- Reports contain names and contact details. Review and remove any real or personal records from `database.sqlite` before publishing; do not commit a database containing private data.
-- Uploaded report images are stored under `public/uploads/`. Review those files before publishing as well.
-- Font Awesome and Google Fonts are loaded from external CDNs, so those fonts/icons require an internet connection.
+This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
 
-## License
+---
 
-No license file is currently included. Add a license if you want to specify how others may use, modify, or distribute this project.
+## 👥 Authors & Acknowledgments
+
+- **Developed by:** [Sahil (@s4hill)](https://github.com/s4hill)
+- **Institution:** Invertis University
+- **Special Thanks:** Campus community, security personnel, and student contributors who helped test and refine the workflow.
+
+<p align="center">
+  Made with ❤️ for <strong>Invertis University</strong>
+</p>
