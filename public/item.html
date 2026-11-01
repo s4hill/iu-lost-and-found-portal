@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Item Details - Invertis University Lost & Found</title>
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico">
+    <link rel="shortcut icon" href="images/favicon.ico">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <img src="images/logo.png" alt="Invertis University Logo">
+                <span>Lost & Found</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="lost.html">Lost Items</a></li>
+                <li><a href="found.html">Found Items</a></li>
+                <li><a href="report-lost.html">Report Lost</a></li>
+                <li><a href="report-found.html">Report Found</a></li>
+                <li><a href="admin.html">Admin</a></li>
+            </ul>
+            <div class="hamburger">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1><i class="fas fa-box-open"></i> Item Details</h1>
+            <p>View complete information about this item</p>
+        </div>
+    </section>
+
+    <!-- Item Details Section -->
+    <section class="item-full-details">
+        <div class="container">
+            <div class="item-detail-container" id="itemDetailContainer">
+                <div class="loading-spinner">
+                    <i class="fas fa-spinner fa-spin"></i> Loading item details...
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Action Buttons -->
+    <section class="item-actions-section">
+        <div class="container">
+            <div class="action-buttons" id="actionButtons">
+                <!-- Buttons will be added dynamically -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <img src="images/logo.png" alt="Invertis University Logo" class="footer-logo">
+                    <p>Helping the Invertis community reconnect with their belongings.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="lost.html">Lost Items</a></li>
+                        <li><a href="found.html">Found Items</a></li>
+                        <li><a href="report-lost.html">Report Lost</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <p><i class="fas fa-map-marker-alt"></i> Invertis University, Bareilly</p>
+                    <p><i class="fas fa-phone"></i> +91 1234567890</p>
+                    <p><i class="fas fa-envelope"></i> lostfound@invertis.edu.in</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Invertis University. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Notification Container -->
+    <div id="toast" class="toast"></div>
+
+    <script src="js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const itemId = urlParams.get('id');
+            const type = urlParams.get('type');
+            
+            if (!itemId || !type) {
+                showToast('Invalid item', 'error');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 2000);
+                return;
+            }
+            
+            loadFullItemDetails(itemId, type);
+        });
+
+        async function loadFullItemDetails(itemId, type) {
+            try {
+                const response = await fetch(`/api/${type}/${itemId}`);
+                if (!response.ok) throw new Error('Item not found');
+                
+                const item = await response.json();
+                displayFullItemDetails(item, type);
+                
+            } catch (error) {
+                console.error('Error loading item:', error);
+                document.getElementById('itemDetailContainer').innerHTML = 
+                    '<p class="error-message">Error loading item details. Please try again.</p>';
+                showToast('Error loading item details', 'error');
+            }
+        }
+
+        function displayFullItemDetails(item, type) {
+            const container = document.getElementById('itemDetailContainer');
+            const actionButtons = document.getElementById('actionButtons');
+            
+            const date = type === 'lost' ? item.date_lost : item.date_found;
+            const location = type === 'lost' ? item.location_lost : item.location_found;
+            
+            // Different contact info based on type
+            let contactInfo = '';
+            if (type === 'lost') {
+                // Lost item - show owner's contact info
+                contactInfo = `
+                    <div class="contact-info-section">
+                        <h3><i class="fas fa-user"></i> Contact Owner</h3>
+                        <div class="contact-details">
+                            <p><strong>Name:</strong> ${escapeHtml(item.contact_name || 'Not provided')}</p>
+                            <p><strong>Email:</strong> <a href="mailto:${escapeHtml(item.contact_email)}">${escapeHtml(item.contact_email || 'Not provided')}</a></p>
+                            <p><strong>Phone:</strong> <a href="tel:${escapeHtml(item.contact_phone)}">${escapeHtml(item.contact_phone || 'Not provided')}</a></p>
+                        </div>
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i>
+                            If you found this item, please contact the owner directly.
+                        </div>
+                    </div>
+                `;
+            } else {
+                // Found item - no contact info shown publicly
+                contactInfo = `
+                    <div class="contact-info-section">
+                        <h3><i class="fas fa-shield-alt"></i> Claim This Item</h3>
+                        <div class="contact-details">
+                            <p>This item has been reported as found. If this belongs to you, please submit a claim.</p>
+                            <p>The item is currently ${item.handed_to_security ? 'with campus security' : 'with the finder'}.</p>
+                        </div>
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            Please provide proof of ownership when claiming.
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Status badge
+            const statusClass = `status-${item.status}`;
+            
+            container.innerHTML = `
+                <div class="item-detail-card">
+                    <div class="item-detail-header">
+                        <h2>${escapeHtml(item.item_name)}</h2>
+                        <span class="item-status-large ${statusClass}">${item.status}</span>
+                    </div>
+                    
+                    <div class="item-detail-grid">
+                        <div class="item-detail-image-large">
+                            ${item.image_path 
+                                ? `<img src="${item.image_path}" alt="${escapeHtml(item.item_name)}" onerror="this.src='images/placeholder.png'">` 
+                                : `<div class="no-image"><i class="fas fa-box fa-5x"></i><p>No image available</p></div>`
+                            }
+                        </div>
+                        
+                        <div class="item-detail-info-large">
+                            <div class="info-group">
+                                <label>Category</label>
+                                <p>${escapeHtml(item.category || 'Not specified')}</p>
+                            </div>
+                            
+                            <div class="info-group">
+                                <label>Description</label>
+                                <p>${escapeHtml(item.description || 'No description provided')}</p>
+                            </div>
+                            
+                            <div class="info-group">
+                                <label>Date ${type === 'lost' ? 'Lost' : 'Found'}</label>
+                                <p><i class="fas fa-calendar"></i> ${formatDate(date)}</p>
+                            </div>
+                            
+                            <div class="info-group">
+                                <label>Location</label>
+                                <p><i class="fas fa-map-marker-alt"></i> ${escapeHtml(location || 'Not specified')}</p>
+                            </div>
+                            
+                            ${type === 'found' && item.handed_to_security ? `
+                                <div class="info-group">
+                                    <label>Status</label>
+                                    <p><span class="badge badge-security">✓ Handed to Security</span></p>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                    
+                    ${contactInfo}
+                </div>
+            `;
+            
+            // Action buttons
+            let buttons = '';
+            if (type === 'found' && item.status === 'found') {
+                buttons = `
+                    <a href="claim.html?itemId=${item.id}&type=found" class="btn btn-primary btn-large">
+                        <i class="fas fa-hand-paper"></i> Claim This Item
+                    </a>
+                `;
+            }
+            buttons += `
+                <a href="${type}.html" class="btn btn-secondary btn-large">
+                    <i class="fas fa-arrow-left"></i> Back to ${type === 'lost' ? 'Lost' : 'Found'} Items
+                </a>
+            `;
+            
+            actionButtons.innerHTML = buttons;
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return 'N/A';
+            try {
+                const date = new Date(dateString);
+                return date.toLocaleDateString('en-IN', {
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                });
+            } catch {
+                return dateString;
+            }
+        }
+    </script>
+</body>
+</html>

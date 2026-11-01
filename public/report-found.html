@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Found Item - Invertis University Lost & Found</title>
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico">
+    <link rel="shortcut icon" href="images/favicon.ico">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <img src="images/logo.png" alt="Invertis University Logo">
+                <span>Lost & Found</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="lost.html">Lost Items</a></li>
+                <li><a href="found.html">Found Items</a></li>
+                <li><a href="report-lost.html">Report Lost</a></li>
+                <li><a href="report-found.html" class="active">Report Found</a></li>
+                <li><a href="admin.html">Admin</a></li>
+            </ul>
+            <div class="hamburger">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1><i class="fas fa-smile"></i> Report Found Item</h1>
+            <p>Help someone reunite with their belonging</p>
+        </div>
+    </section>
+
+    <!-- Report Form -->
+    <section class="form-section">
+        <div class="container">
+            <div class="form-container">
+                <form id="reportFoundForm" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="itemName">Item Name *</label>
+                        <input type="text" id="itemName" name="item_name" required placeholder="e.g., Student ID Card, Laptop, Wallet">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="category">Category *</label>
+                        <select id="category" name="category" required>
+                            <option value="">Select Category</option>
+                            <option value="ID Cards">ID Cards</option>
+                            <option value="Mobile Phones">Mobile Phones</option>
+                            <option value="Wallets">Wallets</option>
+                            <option value="Bags">Bags</option>
+                            <option value="Electronics">Electronics</option>
+                            <option value="Books">Books</option>
+                            <option value="Keys">Keys</option>
+                            <option value="Accessories">Accessories</option>
+                            <option value="Others">Others</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Description *</label>
+                        <textarea id="description" name="description" required placeholder="Provide detailed description of the item"></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="dateFound">Date Found *</label>
+                            <input type="date" id="dateFound" name="date_found" required max="<?php echo date('Y-m-d'); ?>">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="locationFound">Location Found *</label>
+                            <select id="locationFound" name="location_found" required>
+                                <option value="">Select Location</option>
+                                <option value="Library">Library</option>
+                                <option value="Canteen">Canteen</option>
+                                <option value="Auditorium">Auditorium</option>
+                                <option value="Computer Lab">Computer Lab</option>
+                                <option value="Parking Lot">Parking Lot</option>
+                                <option value="Sports Complex">Sports Complex</option>
+                                <option value="Academic Block">Academic Block</option>
+                                <option value="Hostel">Hostel</option>
+                                <option value="Administrative Block">Administrative Block</option>
+                                <option value="Ground">Ground</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="itemImage">Upload Image (Optional)</label>
+                        <div class="file-upload" onclick="document.getElementById('itemImage').click()">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Click to upload or drag and drop</p>
+                            <small>PNG, JPG up to 5MB</small>
+                            <input type="file" id="itemImage" name="image" accept="image/*" style="display: none;">
+                        </div>
+                        <img id="imagePreview" class="image-preview" alt="Image Preview">
+                    </div>
+
+                    <h3>Your Information</h3>
+                    
+                    <div class="form-group">
+                        <label for="finderName">Your Name *</label>
+                        <input type="text" id="finderName" name="finder_name" required placeholder="Full Name">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="finderEmail">Email *</label>
+                            <input type="email" id="finderEmail" name="finder_email" required placeholder="your@invertis.edu.in">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="finderPhone">Phone Number *</label>
+                            <input type="tel" id="finderPhone" name="finder_phone" required placeholder="10-digit mobile number">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="handed_to_security">
+                            I have handed over this item to campus security
+                        </label>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="terms" required>
+                            I confirm that the information provided is accurate
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block">Submit Found Report</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tips Section -->
+    <section class="tips-section">
+        <div class="container">
+            <div class="tips-grid">
+                <div class="tip-card">
+                    <i class="fas fa-hand-holding-heart"></i>
+                    <h3>Thank You for Helping!</h3>
+                    <ul>
+                        <li>Your kindness helps someone recover their belonging</li>
+                        <li>Keep the item safe until claimed</li>
+                        <li>You can also submit to campus security</li>
+                        <li>Don't share personal information publicly</li>
+                    </ul>
+                </div>
+                <div class="tip-card">
+                    <i class="fas fa-clock"></i>
+                    <h3>What Happens Next?</h3>
+                    <ul>
+                        <li>Item will appear in found items list</li>
+                        <li>Owner may contact you through the portal</li>
+                        <li>Verify ownership before returning</li>
+                        <li>Update status once item is returned</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <img src="images/logo.png" alt="Invertis University Logo" class="footer-logo">
+                    <p>Helping the Invertis community reconnect with their belongings.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="lost.html">Lost Items</a></li>
+                        <li><a href="found.html">Found Items</a></li>
+                        <li><a href="report-lost.html">Report Lost</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <p><i class="fas fa-map-marker-alt"></i> Invertis University, Bareilly</p>
+                    <p><i class="fas fa-phone"></i> +91 1234567890</p>
+                    <p><i class="fas fa-envelope"></i> lostfound@invertis.edu.in</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Invertis University. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Notification Container -->
+    <div id="toast" class="toast"></div>
+
+    <script src="js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            setupImagePreview('itemImage', 'imagePreview');
+            
+            const form = document.getElementById('reportFoundForm');
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                if (!validateForm('reportFoundForm')) return;
+                
+                const formData = new FormData(this);
+                
+                try {
+                    const response = await fetch('/api/found', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    if (response.ok) {
+                        showToast('Found item reported successfully!', 'success');
+                        form.reset();
+                        document.getElementById('imagePreview').classList.remove('show');
+                        setTimeout(() => {
+                            window.location.href = 'found.html';
+                        }, 2000);
+                    } else {
+                        const error = await response.json();
+                        showToast(error.message || 'Error submitting report', 'error');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    showToast('Error submitting report', 'error');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

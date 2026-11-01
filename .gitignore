@@ -1,0 +1,16 @@
+# Dependencies
+node_modules/
+
+# Local database and uploaded files
+database.sqlite
+public/uploads/*
+!public/uploads/.gitkeep
+
+# Local secrets and environment files
+.env
+.env.*
+!.env.example
+
+# Logs and operating-system files
+npm-debug.log*
+.DS_Store

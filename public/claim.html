@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claim Item - Invertis University Lost & Found</title>
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico">
+    <link rel="shortcut icon" href="images/favicon.ico">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <img src="images/logo.png" alt="Invertis University Logo">
+                <span>Lost & Found</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="lost.html">Lost Items</a></li>
+                <li><a href="found.html">Found Items</a></li>
+                <li><a href="report-lost.html">Report Lost</a></li>
+                <li><a href="report-found.html">Report Found</a></li>
+                <li><a href="admin.html">Admin</a></li>
+            </ul>
+            <div class="hamburger">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1><i class="fas fa-handshake"></i> Claim Item</h1>
+            <p>Provide proof of ownership to claim this item</p>
+        </div>
+    </section>
+
+    <!-- Item Details Section -->
+    <section class="item-details-section">
+        <div class="container">
+            <div class="item-details-card" id="itemDetails">
+                <!-- Item details will be loaded dynamically -->
+                <div class="loading-spinner">
+                    <i class="fas fa-spinner fa-spin"></i> Loading item details...
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Claim Form -->
+    <section class="form-section">
+        <div class="container">
+            <div class="form-container">
+                <h2>Submit Your Claim</h2>
+                <form id="claimForm">
+                    <input type="hidden" id="itemId" name="item_id">
+                    <input type="hidden" id="itemType" name="item_type">
+
+                    <div class="form-group">
+                        <label for="claimantName">Your Full Name *</label>
+                        <input type="text" id="claimantName" name="claimant_name" required placeholder="Enter your full name">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="claimantEmail">Email *</label>
+                            <input type="email" id="claimantEmail" name="claimant_email" required placeholder="your@invertis.edu.in">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="claimantPhone">Phone Number *</label>
+                            <input type="tel" id="claimantPhone" name="claimant_phone" required placeholder="10-digit mobile number">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="proofDescription">Proof of Ownership *</label>
+                        <textarea id="proofDescription" name="proof_description" required placeholder="Describe how you can prove this item belongs to you (e.g., unique identifiers, receipts, photos, etc.)" rows="5"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="terms" required>
+                            I confirm that the information provided is accurate and I am the rightful owner of this item
+                        </label>
+                    </div>
+
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i>
+                        <strong>Note:</strong> Your claim will be reviewed by the admin. You may be contacted for verification.
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block">Submit Claim</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <img src="images/logo.png" alt="Invertis University Logo" class="footer-logo">
+                    <p>Helping the Invertis community reconnect with their belongings.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="lost.html">Lost Items</a></li>
+                        <li><a href="found.html">Found Items</a></li>
+                        <li><a href="report-lost.html">Report Lost</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <p><i class="fas fa-map-marker-alt"></i> Invertis University, Bareilly</p>
+                    <p><i class="fas fa-phone"></i> +91 1234567890</p>
+                    <p><i class="fas fa-envelope"></i> lostfound@invertis.edu.in</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Invertis University. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Notification Container -->
+    <div id="toast" class="toast"></div>
+
+    <script src="js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get item ID and type from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const itemId = urlParams.get('itemId');
+            const itemType = urlParams.get('type');
+            
+            console.log('Claim page loaded:', { itemId, itemType });
+            
+            if (!itemId || !itemType) {
+                showToast('Invalid item selected', 'error');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 2000);
+                return;
+            }
+            
+            // Validate item type (only found items can be claimed)
+            if (itemType !== 'found') {
+                showToast('Only found items can be claimed', 'error');
+                setTimeout(() => {
+                    window.location.href = 'found.html';
+                }, 2000);
+                return;
+            }
+            
+            document.getElementById('itemId').value = itemId;
+            document.getElementById('itemType').value = itemType;
+            
+            // Load item details
+            loadItemDetails(itemId, itemType);
+            
+            // Setup form submission
+            const form = document.getElementById('claimForm');
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                if (!validateForm('claimForm')) return;
+                
+                // Show loading state
+                const submitBtn = form.querySelector('button[type="submit"]');
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+                submitBtn.disabled = true;
+                
+                const formData = {
+                    item_id: parseInt(document.getElementById('itemId').value),
+                    item_type: document.getElementById('itemType').value,
+                    claimant_name: document.getElementById('claimantName').value.trim(),
+                    claimant_email: document.getElementById('claimantEmail').value.trim(),
+                    claimant_phone: document.getElementById('claimantPhone').value.trim(),
+                    proof_description: document.getElementById('proofDescription').value.trim()
+                };
+                
+                console.log('Submitting claim:', formData);
+                
+                try {
+                    const response = await fetch('/api/claims', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(formData)
+                    });
+                    
+                    const data = await response.json();
+                    console.log('Claim response:', data);
+                    
+                    if (response.ok) {
+                        showToast('✅ Claim submitted successfully! Admin will review it.', 'success');
+                        form.reset();
+                        
+                        // Redirect after success
+                        setTimeout(() => {
+                            window.location.href = 'found.html';
+                        }, 3000);
+                    } else {
+                        // Show error message from server
+                        showToast(data.error || data.message || 'Error submitting claim', 'error');
+                    }
+                } catch (error) {
+                    console.error('Fetch error:', error);
+                    showToast('Network error - please check your connection', 'error');
+                } finally {
+                    // Reset button
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                }
+            });
+        });
+
+        async function loadItemDetails(itemId, itemType) {
+            try {
+                console.log('Loading item details:', { itemId, itemType });
+                
+                const response = await fetch(`/api/${itemType}/${itemId}`);
+                
+                if (!response.ok) {
+                    throw new Error('Failed to load item');
+                }
+                
+                const item = await response.json();
+                console.log('Item loaded:', item);
+                
+                // Check if item can be claimed
+                if (item.status !== 'found') {
+                    document.getElementById('itemDetails').innerHTML = `
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <strong>Cannot Claim:</strong> This item cannot be claimed as it is already ${item.status}.
+                        </div>
+                    `;
+                    document.getElementById('claimForm').style.display = 'none';
+                    return;
+                }
+                
+                const detailsHtml = `
+                    <div class="item-details-header">
+                        <div class="item-details-image">
+                            ${item.image_path 
+                                ? `<img src="${item.image_path}" alt="${escapeHtml(item.item_name)}">` 
+                                : `<i class="fas fa-box fa-4x"></i>`
+                            }
+                        </div>
+                        <div class="item-details-info">
+                            <h2>${escapeHtml(item.item_name)}</h2>
+                            <p><strong>Category:</strong> ${escapeHtml(item.category || 'N/A')}</p>
+                            <p><strong>Description:</strong> ${escapeHtml(item.description || 'No description provided')}</p>
+                            <p><strong>Date Found:</strong> ${formatDate(item.date_found)}</p>
+                            <p><strong>Location:</strong> ${escapeHtml(item.location_found || 'N/A')}</p>
+                            <p><strong>Status:</strong> <span class="status-badge status-${item.status}">${item.status}</span></p>
+                            ${item.handed_to_security ? 
+                                '<p class="security-note"><i class="fas fa-shield-alt"></i> Item has been handed over to campus security</p>' : 
+                                ''
+                            }
+                        </div>
+                    </div>
+                `;
+                
+                document.getElementById('itemDetails').innerHTML = detailsHtml;
+                
+            } catch (error) {
+                console.error('Error loading item details:', error);
+                document.getElementById('itemDetails').innerHTML = `
+                    <div class="alert alert-error">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <strong>Error:</strong> Could not load item details. Please try again.
+                    </div>
+                `;
+            }
+        }
+        
+        // Helper functions
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        function formatDate(dateString) {
+            if (!dateString) return 'N/A';
+            try {
+                const date = new Date(dateString);
+                return date.toLocaleDateString('en-IN', {
+                    day: 'numeric',
+                    month: 'short',
+                    year: 'numeric'
+                });
+            } catch {
+                return dateString;
+            }
+        }
+    </script>
+</body>
+</html>

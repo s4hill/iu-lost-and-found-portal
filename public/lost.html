@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lost Items - Invertis University Lost & Found</title>
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico">
+    <link rel="shortcut icon" href="images/favicon.ico">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const itemId = urlParams.get('itemId');
+        
+        if (itemId && typeof loadItemDetails === 'function') {
+            const type = window.location.pathname.includes('lost') ? 'lost' : 'found';
+            loadItemDetails(itemId, type);
+        }
+    });
+</script>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <img src="images/logo.png" alt="Invertis University Logo">
+                <span>Lost & Found</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="lost.html" class="active">Lost Items</a></li>
+                <li><a href="found.html">Found Items</a></li>
+                <li><a href="report-lost.html">Report Lost</a></li>
+                <li><a href="report-found.html">Report Found</a></li>
+                <li><a href="admin.html">Admin</a></li>
+            </ul>
+            <div class="hamburger">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1><i class="fas fa-search"></i> Lost Items</h1>
+            <p>Browse items reported lost on campus</p>
+        </div>
+    </section>
+
+    <!-- Search and Filters -->
+    <section class="search-section">
+        <div class="container">
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Search lost items...">
+                <button id="searchBtn" class="btn btn-primary"><i class="fas fa-search"></i> Search</button>
+            </div>
+            <div class="search-filters">
+                <select id="categoryFilter">
+                    <option value="">All Categories</option>
+                    <option value="ID Cards">ID Cards</option>
+                    <option value="Mobile Phones">Mobile Phones</option>
+                    <option value="Wallets">Wallets</option>
+                    <option value="Bags">Bags</option>
+                    <option value="Electronics">Electronics</option>
+                    <option value="Books">Books</option>
+                    <option value="Keys">Keys</option>
+                    <option value="Accessories">Accessories</option>
+                    <option value="Others">Others</option>
+                </select>
+                <select id="locationFilter">
+                    <option value="">All Locations</option>
+                    <option value="Library">Library</option>
+                    <option value="Canteen">Canteen</option>
+                    <option value="Auditorium">Auditorium</option>
+                    <option value="Computer Lab">Computer Lab</option>
+                    <option value="Parking Lot">Parking Lot</option>
+                    <option value="Sports Complex">Sports Complex</option>
+                    <option value="Academic Block">Academic Block</option>
+                    <option value="Hostel">Hostel</option>
+                </select>
+                <select id="dateFilter">
+                    <option value="">Sort by Date</option>
+                    <option value="newest">Newest First</option>
+                    <option value="oldest">Oldest First</option>
+                </select>
+            </div>
+        </div>
+    </section>
+
+    <!-- Items Grid -->
+    <section class="items-section">
+        <div class="container">
+            <div class="items-grid" id="itemsGrid">
+                <!-- Items will be loaded dynamically -->
+                <div class="loading-spinner">
+                    <i class="fas fa-spinner fa-spin"></i> Loading items...
+                </div>
+            </div>
+            
+            <!-- Pagination -->
+            <div class="pagination" id="pagination"></div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <img src="images/logo.png" alt="Invertis University Logo" class="footer-logo">
+                    <p>Helping the Invertis community reconnect with their belongings.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="lost.html">Lost Items</a></li>
+                        <li><a href="found.html">Found Items</a></li>
+                        <li><a href="report-lost.html">Report Lost</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <p><i class="fas fa-map-marker-alt"></i> Invertis University, Bareilly</p>
+                    <p><i class="fas fa-phone"></i> +91 1234567890</p>
+                    <p><i class="fas fa-envelope"></i> lostfound@invertis.edu.in</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Invertis University. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Notification Container -->
+    <div id="toast" class="toast"></div>
+
+    <!-- Item Details Modal -->
+    <div id="itemModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/search.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize lost items page
+            loadLostItems();
+        });
+
+        async function loadLostItems() {
+            try {
+                const response = await fetch('/api/lost');
+                const items = await response.json();
+                displayItems(items, 'itemsGrid');
+            } catch (error) {
+                console.error('Error loading lost items:', error);
+                showToast('Error loading items', 'error');
+            }
+        }
+    </script>
+</body>
+</html>
