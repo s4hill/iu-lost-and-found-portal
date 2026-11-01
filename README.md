@@ -66,6 +66,17 @@ PORT=4000 npm start
 
 The SQLite database is stored at `database.sqlite` in the project root and is created/synchronized when the server starts. On a fresh database, the application seeds a demo admin account and sample item records.
 
+### Demo admin login
+
+Use these demo credentials to try the admin page locally:
+
+```text
+Username: admin
+Password: admin123
+```
+
+These are public demo credentials for this project only. Do not reuse this password or use this demo authentication setup for a production deployment.
+
 ## Application pages
 
 | Page | URL | Purpose |
