@@ -44,8 +44,8 @@ A campus lost-and-found web application for reporting misplaced belongings, brow
 ### Install and run
 
 ```bash
-git clone <your-repository-url>
-cd <repository-folder>
+git clone https://github.com/s4hill/iu-lost-and-found-portal.git
+cd iu-lost-and-found-portal
 npm install
 npm run dev
 ```
